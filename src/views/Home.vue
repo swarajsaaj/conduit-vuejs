@@ -86,7 +86,18 @@
 <script>
 export default {
   name: "home",
-  components: {}
+  components: {},
+  computed: {
+    user : function(){
+      return this.$store.getters["users/user"]
+    }
+  },
+  data: function(){
+    return {
+      
+    }
+  },
+
 };
 </script>
 

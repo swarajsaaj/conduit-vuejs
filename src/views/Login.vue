@@ -8,21 +8,57 @@
             <router-link to="register">Need an account?</router-link>
           </p>
 
-          <ul class="error-messages">
-            <li>That email is already taken</li>
+          <ul class="error-messages" v-if="errors">
+            <li v-for="(error,field) in errors" :key="field">{{field}} {{error[0]}}</li>
           </ul>
 
           <form>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="text" placeholder="Email">
+              <input
+                v-model="user.email"
+                class="form-control form-control-lg"
+                type="text"
+                placeholder="Email"
+              >
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="password" placeholder="Password">
+              <input
+                v-model="user.password"
+                class="form-control form-control-lg"
+                type="password"
+                placeholder="Password"
+              >
             </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">Sign in</button>
+            <button @click="login" class="btn btn-lg btn-primary pull-xs-right">Sign in</button>
           </form>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+
+<script>
+export default {
+  data: function() {
+    return {
+      user: {}
+    };
+  },
+  computed: {
+    errors() {
+      return this.$store.getters["users/errors"];
+    }
+  },
+  methods: {
+    login: function() {
+      this.$store
+        .dispatch("users/login", {
+          email: this.user.email,
+          password: this.user.password
+        })
+        .then(() => this.$router.push({ name: "home" }));
+    }
+  }
+};
+</script>

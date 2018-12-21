@@ -17,13 +17,26 @@
             <i class="ion-gear-a"></i>&nbsp;Settings
           </router-link>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-show="!user">
           <router-link to="/login" class="nav-link" href>Sign in</router-link>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-show="!user">
           <router-link to="/register" class="nav-link" href>Sign up</router-link>
+        </li>
+         <li class="nav-item" v-if="user">
+          <router-link to="/profile" class="nav-link" href>{{user.username}}</router-link>
         </li>
       </ul>
     </div>
   </nav>
 </template>
+
+<script>
+export default {
+  computed:{
+    user: function(){
+      return this.$store.getters["users/user"];
+    }
+  }
+}
+</script>
