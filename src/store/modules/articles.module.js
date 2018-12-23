@@ -1,7 +1,12 @@
 import ApiService from "@/common/api.service";
 import { FETCH_ARTICLES } from "@/constants/actions";
-import { FETCH_SINGLE_ARTICLE, FETCH_COMMENTS } from "@/constants/actions";
-import { POST_COMMENT } from "../../constants/actions";
+import {
+  FETCH_SINGLE_ARTICLE,
+  FETCH_COMMENTS,
+  POST_COMMENT,
+  CREATE_ARTICLE,
+  DELETE_COMMENT
+} from "@/constants/actions";
 
 export default {
   state: {
@@ -76,6 +81,28 @@ export default {
         .catch(error => {
           throw new Error(error);
         });
+    },
+    [DELETE_COMMENT]: function({ dispatch }, payload) {
+      ApiService.delete(
+        `/articles/${payload.slug}/comments/${payload.commentId}`
+      )
+        .then(() => {
+          dispatch(FETCH_COMMENTS, payload);
+        })
+        .catch(error => {
+          throw new Error(error);
+        });
+    },
+    [CREATE_ARTICLE]: function({ state }, payload) {
+      return new Promise((resolve, reject) => {
+        ApiService.post("/articles", payload)
+          .then(({ data }) => {
+            resolve(data);
+          })
+          .catch(({ response }) => {
+            reject(response.data.errors);
+          });
+      });
     }
   }
 };

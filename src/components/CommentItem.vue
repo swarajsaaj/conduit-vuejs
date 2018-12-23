@@ -14,7 +14,7 @@
               <span class="date-posted">{{comment.createdAt | date}}</span>
               <span class="mod-options">
                 <i v-if="comment.author.username==user.username" class="ion-edit"></i>
-                <i v-if="user.username==authorUsername" class="ion-trash-a"></i>
+                <i @click="$emit('delete-comment',comment.id)" v-if="comment.author.username==user.username || user.username==authorUsername" class="ion-trash-a"></i>
               </span>
             </div>
           </div>
