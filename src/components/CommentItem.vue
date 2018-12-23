@@ -13,7 +13,7 @@
               <router-link :to="{name:'profile',params:{username:comment.author.username}}"  href class="comment-author">{{comment.author.username}}</router-link>
               <span class="date-posted">{{comment.createdAt | date}}</span>
               <span class="mod-options">
-                <i v-if="comment.author.username==user.username" class="ion-edit"></i>
+                <i @click="$emit('edit-comment',comment.body)" v-if="comment.author.username==user.username" class="ion-edit"></i>
                 <i @click="$emit('delete-comment',comment.id)" v-if="comment.author.username==user.username || user.username==authorUsername" class="ion-trash-a"></i>
               </span>
             </div>

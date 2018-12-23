@@ -43,6 +43,7 @@
             :comment="comment"
             :authorUsername="article.author.username"
             @delete-comment="deleteComment($event)"
+            @edit-comment="editComment($event)"
           ></CommentItem>
         </div>
       </div>
@@ -88,6 +89,10 @@ export default {
           slug:this.articleSlug,
           commentId:commentId
       });
+    },
+    editComment:function(commentText){
+      //As edit functionality does not exist in APIm adding a dummy reply like functionality
+      this.newComment=`--------- \nEdit :: ${commentText}`
     }
   }
 }
