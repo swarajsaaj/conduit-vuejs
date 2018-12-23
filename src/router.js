@@ -70,7 +70,7 @@ export default new Router({
     },
     {
       path: "/editor/:article_slug",
-      name: "editArticle",
+      name: "edit-article",
       component: () => import("@/views/EditArticle.vue")
     }
   ]

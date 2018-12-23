@@ -4,7 +4,7 @@
       <div class="container">
         <h1>{{article.title}}</h1>
 
-        <ArticleMetaItem :article="article"></ArticleMetaItem>
+        <ArticleMetaItem :article="article" @edit="editArticle($event)" @delete="deleteArticle($event)"></ArticleMetaItem>
       </div>
     </div>
 
@@ -18,7 +18,7 @@
       <hr>
 
       <div class="article-actions">
-        <ArticleMetaItem :article="article"></ArticleMetaItem>
+        <ArticleMetaItem :article="article" @edit="editArticle($event)" @delete="deleteArticle($event)"></ArticleMetaItem>
       </div>
 
       <div class="row">
@@ -52,48 +52,66 @@
 </template>
 
 <script>
-import {FETCH_SINGLE_ARTICLE,FETCH_COMMENTS,POST_COMMENT,DELETE_COMMENT} from "@/constants/actions"
-import { mapState } from 'vuex'
-import ArticleMetaItem from "@/components/ArticleMetaItem"
-import CommentItem from "@/components/CommentItem"
+import {
+  FETCH_SINGLE_ARTICLE,
+  FETCH_COMMENTS,
+  POST_COMMENT,
+  DELETE_COMMENT,
+  DELETE_ARTICLE
+} from "@/constants/actions";
+import { mapState } from "vuex";
+import ArticleMetaItem from "@/components/ArticleMetaItem";
+import CommentItem from "@/components/CommentItem";
 
 export default {
-  components:{ArticleMetaItem,CommentItem},
-  data(){
+  components: { ArticleMetaItem, CommentItem },
+  data() {
     return {
-      newComment:""
-    }
+      newComment: ""
+    };
   },
-  computed:{
-    articleSlug(){
+  computed: {
+    articleSlug() {
       return this.$route.params.article_slug;
     },
     ...mapState({
-      article: state=>state.articles.article,
-      comments: state=>state.articles.comments
+      article: state => state.articles.article,
+      comments: state => state.articles.comments
     })
   },
-  mounted(){
-    this.$store.dispatch(FETCH_SINGLE_ARTICLE,{slug:this.articleSlug});
-    this.$store.dispatch(FETCH_COMMENTS,{slug:this.articleSlug});
+  mounted() {
+    this.$store.dispatch(FETCH_SINGLE_ARTICLE, { slug: this.articleSlug });
+    this.$store.dispatch(FETCH_COMMENTS, { slug: this.articleSlug });
   },
-  methods:{
-    postComment:function(){
-      this.$store.dispatch(POST_COMMENT,{
-        slug:this.articleSlug,
-        comment:this.newComment
+  methods: {
+    postComment: function() {
+      this.$store.dispatch(POST_COMMENT, {
+        slug: this.articleSlug,
+        comment: this.newComment
       });
     },
-    deleteComment:function(commentId){
-      this.$store.dispatch(DELETE_COMMENT,{
-          slug:this.articleSlug,
-          commentId:commentId
+    deleteComment: function(commentId) {
+      this.$store.dispatch(DELETE_COMMENT, {
+        slug: this.articleSlug,
+        commentId: commentId
       });
     },
-    editComment:function(commentText){
+    editComment: function(commentText) {
       //As edit functionality does not exist in APIm adding a dummy reply like functionality
-      this.newComment=`--------- \nEdit :: ${commentText}`
+      this.newComment = `--------- \nEdit :: ${commentText}`;
+    },
+    editArticle: function(articleSlug) {
+      this.$router.push({
+        name: "edit-article",
+        params: { article_slug: articleSlug }
+      });
+    },
+    deleteArticle: function(articleSlug){
+      this.$store.dispatch(DELETE_ARTICLE, {
+        slug: this.articleSlug
+      })
+      .then(()=>this.$router.push({name:'global-feed'}));
     }
   }
-}
+};
 </script>

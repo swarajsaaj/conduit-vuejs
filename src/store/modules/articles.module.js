@@ -5,7 +5,9 @@ import {
   FETCH_COMMENTS,
   POST_COMMENT,
   CREATE_ARTICLE,
-  DELETE_COMMENT
+  DELETE_COMMENT,
+  EDIT_ARTICLE,
+  DELETE_ARTICLE
 } from "@/constants/actions";
 
 export default {
@@ -95,7 +97,31 @@ export default {
     },
     [CREATE_ARTICLE]: function({ state }, payload) {
       return new Promise((resolve, reject) => {
-        ApiService.post("/articles", payload)
+        ApiService.post("/articles", { article: payload.article })
+          .then(({ data }) => {
+            resolve(data);
+          })
+          .catch(({ response }) => {
+            reject(response.data.errors);
+          });
+      });
+    },
+    [EDIT_ARTICLE]: function({ state }, payload) {
+      return new Promise((resolve, reject) => {
+        ApiService.put(`/articles/${payload.slug}`, {
+          article: payload.article
+        })
+          .then(({ data }) => {
+            resolve(data);
+          })
+          .catch(({ response }) => {
+            reject(response.data.errors);
+          });
+      });
+    },
+    [DELETE_ARTICLE]: function({ state }, payload) {
+      return new Promise((resolve, reject) => {
+        ApiService.delete(`/articles/${payload.slug}`)
           .then(({ data }) => {
             resolve(data);
           })
