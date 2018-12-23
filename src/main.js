@@ -5,11 +5,12 @@ import store from "./store/index";
 import "./assets/main.css";
 import ApiService from "./common/api.service";
 import DateFilter from "@/filters/date.filter";
+import MarkdownFilter from "@/filters/markdown.filter";
 
 Vue.config.productionTip = false;
 
 Vue.filter("date", DateFilter);
-
+Vue.filter("markdown", MarkdownFilter);
 initApp();
 
 function initApp() {

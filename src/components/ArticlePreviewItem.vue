@@ -5,7 +5,7 @@
         <img :src="article.author.image">
       </a>
       <div class="info">
-        <a href class="author">{{article.author.username}}</a>
+        <router-link :to="{name:'profile',params:{username:article.author.username}}" href class="author">{{article.author.username}}</router-link>
         <span class="date">{{article.createdAt | date}}</span>
       </div>
       <button
@@ -16,11 +16,11 @@
         {{article.favoritesCount}}
       </button>
     </div>
-    <a href class="preview-link">
+    <router-link :to="{name:'article',params:{article_slug:article.slug}}" href class="preview-link">
       <h1>{{article.title}}</h1>
       <p>{{article.description}}</p>
       <span>Read more...</span>
-    </a>
+    </router-link>
     <div v-if="article.tagList" class="tag-list">
       <span
         v-for="tag in article.tagList"

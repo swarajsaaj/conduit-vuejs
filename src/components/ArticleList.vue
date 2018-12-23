@@ -16,6 +16,7 @@
 import ArticlePreviewItem from "@/components/ArticlePreviewItem";
 import Pagination from "@/components/Pagination";
 import { mapState } from "vuex";
+import {FETCH_ARTICLES} from "@/constants/actions";
 
 export default {
   name: "ArticleList",
@@ -37,7 +38,9 @@ export default {
     }),
     pages() {
       return this.articlesCount
-        ? [...Array(Math.ceil(this.articlesCount / 10)).keys()].map(key => key + 1)
+        ? [...Array(Math.ceil(this.articlesCount / 10)).keys()].map(
+            key => key + 1
+          )
         : 0;
     }
   },
@@ -56,18 +59,24 @@ export default {
       if (this.params.tag) {
         fetchParams.filters.tag = this.params.tag;
       }
+      if (this.params.author) {
+        fetchParams.filters.author = this.params.author;
+      }
+      if (this.params.favorited) {
+        fetchParams.filters.favorited = this.params.favorited;
+      }
 
-      this.$store.dispatch("articles/fetchArticles", fetchParams);
+      this.$store.dispatch(FETCH_ARTICLES, fetchParams);
     },
     changePage(newPage) {
       this.currentPage = newPage;
       this.getArticles();
     }
   },
-  watch:{
+  watch: {
     params() {
       this.getArticles();
-    },
+    }
   }
 };
 </script>

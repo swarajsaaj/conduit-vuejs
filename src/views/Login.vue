@@ -8,9 +8,7 @@
             <router-link to="register">Need an account?</router-link>
           </p>
 
-          <ul class="error-messages" v-if="errors">
-            <li v-for="(error,field) in errors" :key="field">{{field}} {{error[0]}}</li>
-          </ul>
+          <ErrorList :errors="errors"></ErrorList>
 
           <form>
             <fieldset class="form-group">
@@ -39,17 +37,15 @@
 
 
 <script>
+import ErrorList from "@/components/ErrorList";
 export default {
   data: function() {
     return {
-      user: {}
+      user: {},
+      errors: {}
     };
   },
-  computed: {
-    errors() {
-      return this.$store.getters["users/errors"];
-    }
-  },
+  components:{ErrorList},
   methods: {
     login: function() {
       this.$store
@@ -57,7 +53,8 @@ export default {
           email: this.user.email,
           password: this.user.password
         })
-        .then(() => this.$router.push({ name: "global-feed" }));
+        .then(() => this.$router.push({ name: "global-feed" }),
+        (err)=>this.errors=err);
     }
   }
 };

@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-md-6 offset-md-3 col-xs-12">
           <h1 class="text-xs-center">Your Settings</h1>
-
+          <ErrorList :errors="errors"></ErrorList>
           <form>
             <fieldset>
               <fieldset class="form-group">
@@ -47,7 +47,10 @@
                   placeholder="Password"
                 >
               </fieldset>
-              <button class="btn btn-lg btn-primary pull-xs-right">Update Settings</button>
+              <button
+                class="btn btn-lg btn-primary pull-xs-right"
+                @click="updateProfile"
+              >Update Settings</button>
             </fieldset>
           </form>
           <hr>
@@ -59,17 +62,41 @@
 </template>
 
 <script>
+import ErrorList from "@/components/ErrorList";
+
 export default {
-  computed: {
-    user: function() {
-      return this.$store.getters["users/user"];
+  data(){
+    return {
+      errors: {}
     }
   },
+  computed: {
+    user: function() {
+      var userCopy = Object.assign({},this.$store.getters["users/user"]);
+      return userCopy;
+    }
+  },
+  components : {ErrorList},
   methods: {
-    logout: function() {
+    logout() {
       this.$store
         .dispatch("users/logout")
         .then(() => this.$router.push({ name: "global-feed" }));
+    },
+    updateProfile() {
+      var updatedUser = {
+        username: this.user.username,
+        bio: this.user.bio,
+        email: this.user.email,
+        image: this.user.image
+      };
+      if (this.user.password) {
+        updatedUser.password = this.user.password;
+      }
+      this.$store
+        .dispatch("users/update", updatedUser)
+        .then(() => this.$router.push({ name: "global-feed" }),
+        (err)=>this.errors=err);
     }
   }
 };

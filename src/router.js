@@ -48,9 +48,20 @@ export default new Router({
       component: () => import("@/views/ViewArticle.vue")
     },
     {
-      path: "/profile/:username",
-      name: "profile",
-      component: () => import("@/views/Profile.vue")
+      path: "/profile/@:username",
+      component: () => import("@/views/Profile.vue"),
+      children: [
+        {
+          path: "",
+          name: "profile",
+          component: () => import("@/views/ProfileUserArticles.vue")
+        },
+        {
+          path: "favorites",
+          name: "profile-favorite-articles",
+          component: () => import("@/views/ProfileFavoriteArticles.vue")
+        }
+      ]
     },
     {
       path: "/editor",

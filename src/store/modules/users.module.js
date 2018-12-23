@@ -4,15 +4,11 @@ import { FETCH_PROFILE } from "@/constants/actions";
 export default {
   namespaced: true,
   state: {
-    errors: {},
     principalUser: null,
     profile: {},
     isAuthenticated: false
   },
   getters: {
-    errors: state => {
-      return state.errors;
-    },
     user: state => {
       return state.principalUser;
     },
@@ -32,9 +28,6 @@ export default {
       state.isAuthenticated = false;
       ApiService.clearToken();
     },
-    setErrors(state, payload) {
-      state.errors = payload;
-    },
     setProfile(state, payload) {
       state.profile = payload;
     }
@@ -48,8 +41,7 @@ export default {
             resolve(data);
           })
           .catch(({ response }) => {
-            commit("setErrors", response.data.errors);
-            reject(response);
+            reject(response.data.errors);
           });
       });
     },
@@ -61,8 +53,7 @@ export default {
             resolve(data);
           })
           .catch(({ response }) => {
-            commit("setErrors", response.data.errors);
-            reject(response);
+            reject(response.data.errors);
           });
       });
     },
@@ -83,8 +74,19 @@ export default {
           commit("setProfile", data.profile);
         })
         .catch(({ response }) => {
-          commit("setErrors", response.data.errors);
+          throw new Error(response.data.errors);
         });
+    },
+    update: function({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        ApiService.put("/user", payload)
+          .then(({ data }) => {
+            resolve(data);
+          })
+          .catch(({ response }) => {
+            reject(response.data.errors);
+          });
+      });
     }
   }
 };

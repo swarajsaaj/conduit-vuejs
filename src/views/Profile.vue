@@ -7,10 +7,30 @@
             <img :src="profile.image" class="user-img">
             <h4>{{profile.username}}</h4>
             <p>{{profile.bio}}</p>
-            <button class="btn btn-sm btn-outline-secondary action-btn">
+            <router-link
+              v-if="isCurrentUser"
+              class="btn btn-sm btn-outline-secondary action-btn"
+              :to="{name:'settings'}"
+            >
+              <i class="ion-settings"></i>
+              &nbsp;
+              Edit Profile
+            </router-link>
+            <button
+              v-if="!isCurrentUser && !profile.following"
+              class="btn btn-sm btn-outline-secondary action-btn"
+            >
               <i class="ion-plus-round"></i>
               &nbsp;
-              Follow Eric Simons
+              Follow {{profile.username}}
+            </button>
+            <button
+              v-if="!isCurrentUser && profile.following"
+              class="btn btn-sm btn-outline-secondary action-btn"
+            >
+              <i class="ion-plus-round"></i>
+              &nbsp;
+              Unfollow {{profile.username}}
             </button>
           </div>
         </div>
@@ -23,77 +43,39 @@
           <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
-                <a class="nav-link active" href>My Articles</a>
+                <router-link :to="{name:'profile',params:{'username':profile.username}}" class="nav-link" active-class="active" exact href>My Articles</router-link>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href>Favorited Articles</a>
+                <router-link :to="{name:'profile-favorite-articles',params:{'username':profile.username}}" class="nav-link" active-class="active" exact href>Favorited Articles</router-link>
               </li>
             </ul>
           </div>
-
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href>
-                <img src="http://i.imgur.com/Qr71crq.jpg">
-              </a>
-              <div class="info">
-                <a href class="author">Eric Simons</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 29
-              </button>
-            </div>
-            <a href class="preview-link">
-              <h1>How to build webapps that scale</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-            </a>
-          </div>
-
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href>
-                <img src="http://i.imgur.com/N4VcUeJ.jpg">
-              </a>
-              <div class="info">
-                <a href class="author">Albert Pai</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 32
-              </button>
-            </div>
-            <a href class="preview-link">
-              <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-              <ul class="tag-list">
-                <li class="tag-default tag-pill tag-outline">Music</li>
-                <li class="tag-default tag-pill tag-outline">Song</li>
-              </ul>
-            </a>
-          </div>
         </div>
       </div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 
 <script>
-import {FETCH_PROFILE} from "@/constants/actions"
-import {mapState} from "vuex";
+import { FETCH_PROFILE } from "@/constants/actions";
+import { mapState, mapGetters } from "vuex";
 
 export default {
-  computed:{
+  computed: {
     ...mapState({
-      profile : state => state.users.profile
-    })
+      profile: state => state.users.profile
+    }),
+    ...mapGetters({
+      user: "users/user"
+    }),
+    isCurrentUser() {
+      return this.user.username == this.profile.username;
+    }
   },
-  mounted(){
-    console.log(this.$store);
-    this.$store.dispatch(FETCH_PROFILE,this.$route.params)
+  mounted() {
+    this.$store.dispatch(FETCH_PROFILE, this.$route.params);
   }
-}
+};
 </script>
