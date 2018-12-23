@@ -8,8 +8,24 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: "",
+          name: "global-feed",
+          component: () => import("@/views/HomeGlobalFeed.vue")
+        },
+        {
+          path: "/userfeed",
+          name: "user-feed",
+          component: () => import("@/views/HomeUserFeed.vue")
+        },
+        {
+          path: "/tagfeed/:tag",
+          name: "tag-feed",
+          component: () => import("@/views/HomeTagFeed.vue")
+        }
+      ]
     },
     {
       path: "/login",

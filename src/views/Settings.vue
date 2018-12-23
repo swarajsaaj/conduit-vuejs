@@ -69,7 +69,7 @@ export default {
     logout: function() {
       this.$store
         .dispatch("users/logout")
-        .then(() => this.$router.push({ name: "home" }));
+        .then(() => this.$router.push({ name: "global-feed" }));
     }
   }
 };

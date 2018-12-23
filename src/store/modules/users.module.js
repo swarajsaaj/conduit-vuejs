@@ -1,11 +1,12 @@
 import ApiService from "@/common/api.service";
+import { FETCH_PROFILE } from "@/constants/actions";
 
 export default {
   namespaced: true,
   state: {
     errors: {},
     principalUser: null,
-    user: {},
+    profile: {},
     isAuthenticated: false
   },
   getters: {
@@ -29,9 +30,13 @@ export default {
     logoutUser(state) {
       state.principalUser = null;
       state.isAuthenticated = false;
+      ApiService.clearToken();
     },
     setErrors(state, payload) {
       state.errors = payload;
+    },
+    setProfile(state, payload) {
+      state.profile = payload;
     }
   },
   actions: {
@@ -66,6 +71,20 @@ export default {
         commit("logoutUser");
         resolve();
       });
+    },
+    checkAuth: function({ state }) {
+      if (state.isAuthenticated) {
+        ApiService.setToken(state.principalUser.token);
+      }
+    },
+    fetchProfile: function({ commit }, payload) {
+      ApiService.query("/profiles/" + payload.username)
+        .then(({ data }) => {
+          commit("setProfile", data.profile);
+        })
+        .catch(({ response }) => {
+          commit("setErrors", response.data.errors);
+        });
     }
   }
 };

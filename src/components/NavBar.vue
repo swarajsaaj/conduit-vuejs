@@ -1,14 +1,14 @@
 <template>
   <nav class="navbar navbar-light">
     <div class="container">
-      <a class="navbar-brand" href="index.html">conduit</a>
+      <router-link class="navbar-brand" to="/" href>conduit</router-link>
       <ul class="nav navbar-nav pull-xs-right">
         <li class="nav-item">
           <!-- Add "active" class when you're on that page" -->
           <router-link to="/" class="nav-link active" href>Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link to ="/editor" class="nav-link" href>
+          <router-link to="/editor" class="nav-link" href>
             <i class="ion-compose"></i>&nbsp;New Post
           </router-link>
         </li>
@@ -23,8 +23,12 @@
         <li class="nav-item" v-show="!user">
           <router-link to="/register" class="nav-link" href>Sign up</router-link>
         </li>
-         <li class="nav-item" v-if="user">
-          <router-link to="/profile" class="nav-link" href>{{user.username}}</router-link>
+        <li class="nav-item" v-if="user">
+          <router-link
+            :to="{name:'profile',params:{ 'username':user.username }}"
+            class="nav-link"
+            href
+          >{{user.username}}</router-link>
         </li>
       </ul>
     </div>
@@ -33,10 +37,10 @@
 
 <script>
 export default {
-  computed:{
-    user: function(){
+  computed: {
+    user: function() {
       return this.$store.getters["users/user"];
     }
   }
-}
+};
 </script>

@@ -57,7 +57,7 @@ export default {
           email: this.user.email,
           password: this.user.password
         })
-        .then(() => this.$router.push({ name: "home" }));
+        .then(() => this.$router.push({ name: "global-feed" }));
     }
   }
 };

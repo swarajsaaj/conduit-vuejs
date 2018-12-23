@@ -13,15 +13,19 @@ const ApiService = {
     Vue.axios.defaults.headers.common["Authorization"] = `Token ${token}`;
   },
 
+  clearToken() {
+    delete Vue.axios.defaults.headers.common["Authorization"];
+  },
+
   query(resource, params) {
     return Vue.axios.get(resource, params).catch(error => {
-      throw new Error(`[RWV] ApiService ${error}`);
+      throw new Error(`ApiService ${error}`);
     });
   },
 
   get(resource, slug = "") {
     return Vue.axios.get(`${resource}/${slug}`).catch(error => {
-      throw new Error(`[RWV] ApiService ${error}`);
+      throw new Error(`ApiService ${error}`);
     });
   },
 
