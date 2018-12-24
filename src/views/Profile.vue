@@ -63,13 +63,14 @@ import { mapState, mapGetters } from "vuex";
 export default {
   computed: {
     ...mapState({
-      profile: state => state.users.profile
+      profile: state => state.users.profile,
+      isAuthenticated: state => state.users.isAuthenticated
     }),
     ...mapGetters({
       user: "user"
     }),
     isCurrentUser() {
-      return this.user.username == this.profile.username;
+      return this.user && this.user.username == this.profile.username;
     }
   },
   mounted() {
@@ -77,6 +78,10 @@ export default {
   },
   methods:{
     toggleFollow(follow){
+      if (!this.isAuthenticated) {
+        this.$router.push({ name: "login" });
+        return;
+      }
       const payload = {
         username: this.profile.username
       }

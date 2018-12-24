@@ -10,6 +10,7 @@ export const CHECK_AUTH = "checkAuth";
 export const UPDATE_PROFILE = "updateProfile";
 
 //Article Actions
+export const FETCH_TAGS = "fetchTags";
 export const FETCH_ARTICLES = "fetchArticles";
 export const FETCH_SINGLE_ARTICLE = "fetchSingleArticle";
 export const CREATE_ARTICLE = "createArticle";
@@ -17,12 +18,8 @@ export const EDIT_ARTICLE = "editArticle";
 export const DELETE_ARTICLE = "deleteArticle";
 export const FAVORITE_ARTICLE = "favoriteArticle";
 export const UNFAVORITE_ARTICLE = "unfavoriteArticle";
-export const UPDATE_ARTICLE = "updateArticle";
 
 //Comment Actions
 export const FETCH_COMMENTS = "fetchComments";
 export const POST_COMMENT = "postComment";
 export const DELETE_COMMENT = "deleteComment";
-
-//Common
-export const UPDATE_ARTICLE_AUTHOR = "updateArticleAuthor";

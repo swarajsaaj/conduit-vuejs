@@ -1,7 +1,8 @@
 import ApiService from "@/common/api.service";
+import { FETCH_TAGS } from "@/constants/actions";
+import { SET_TAGS } from "@/constants/mutations";
 
 export default {
-  namespaced: true,
   state: {
     tags: [],
     isLoading: true
@@ -12,16 +13,16 @@ export default {
     }
   },
   mutations: {
-    setTags: function(state, payload) {
+    [SET_TAGS]: function(state, payload) {
       state.tags = payload;
       state.isLoading = false;
     }
   },
   actions: {
-    fetchTags: function({ commit }) {
+    [FETCH_TAGS]: function({ commit }) {
       ApiService.get("/tags")
         .then(({ data }) => {
-          commit("setTags", data.tags);
+          commit(SET_TAGS, data.tags);
         })
         .catch(error => {
           throw new Error(error);

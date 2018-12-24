@@ -12,7 +12,7 @@
         <div class="col-md-9">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
+              <li class="nav-item" v-if="isAuthentnicated">
                 <router-link
                   :to="{name : 'user-feed'}"
                   class="nav-link"
@@ -62,24 +62,25 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import ArticleList from "@/components/ArticleList.vue";
+import {FETCH_TAGS} from "@/constants/actions";
 
 export default {
   name: "home",
   components: { ArticleList },
   computed: {
     ...mapGetters({
-      isAuthentnicated: "users/isAuthenticated",
-      tags: "home/tags"
+      tags: "tags"
     }),
     ...mapState({
-      isLoading: state => state.home.isLoading
+      isLoading: state => state.home.isLoading,
+      isAuthentnicated: state =>state.users.isAuthenticated
     }),
     tag() {
       return this.$route.params.tag;
     }
   },
   mounted: function() {
-    this.$store.dispatch("home/fetchTags");
+    this.$store.dispatch(FETCH_TAGS);
   },
   data: function() {
     return {};

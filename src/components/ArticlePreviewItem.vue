@@ -42,10 +42,20 @@
 
 <script>
 import { FAVORITE_ARTICLE, UNFAVORITE_ARTICLE } from "@/constants/actions";
+import {mapState} from "vuex";
 export default {
   props: ["article"],
+  computed:{
+    ...mapState({
+      isAuthenticated:state=>state.users.isAuthenticated
+    })
+  },
   methods: {
     toggleFavorite(favorite) {
+      if (!this.isAuthenticated) {
+        this.$router.push({ name: "login" });
+        return;
+      }
       if (favorite) {
         this.$store.dispatch(FAVORITE_ARTICLE, { slug: this.article.slug });
       } else {

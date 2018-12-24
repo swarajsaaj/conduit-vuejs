@@ -1,5 +1,4 @@
 import ApiService from "@/common/api.service";
-import { FETCH_ARTICLES } from "@/constants/actions";
 import {
   FETCH_SINGLE_ARTICLE,
   FETCH_COMMENTS,
@@ -10,9 +9,17 @@ import {
   DELETE_ARTICLE,
   FAVORITE_ARTICLE,
   UNFAVORITE_ARTICLE,
-  UPDATE_ARTICLE,
-  UPDATE_ARTICLE_AUTHOR
+  FETCH_ARTICLES
 } from "@/constants/actions";
+
+import {
+  SET_ARTICLES,
+  SET_LOADING_ARTICLE,
+  SET_SINGLE_ARTICLE,
+  SET_COMMENTS,
+  UPDATE_ARTICLE_AUTHOR,
+  UPDATE_ARTICLE
+} from "@/constants/mutations";
 
 export default {
   state: {
@@ -28,17 +35,17 @@ export default {
     }
   },
   mutations: {
-    setLoading: function(state, payload) {
+    [SET_LOADING_ARTICLE]: function(state, payload) {
       state.isLoading = payload;
     },
-    setArticles: function(state, payload) {
+    [SET_ARTICLES]: function(state, payload) {
       state.articles = payload.articles;
       state.articlesCount = payload.articlesCount;
     },
-    setArticle: function(state, payload) {
+    [SET_SINGLE_ARTICLE]: function(state, payload) {
       state.article = payload;
     },
-    setComments: function(state, payload) {
+    [SET_COMMENTS]: function(state, payload) {
       state.comments = payload;
     },
     [UPDATE_ARTICLE]: function(state, payload) {
@@ -54,41 +61,41 @@ export default {
       }
     },
     [UPDATE_ARTICLE_AUTHOR]: function(state, payload) {
-      if (state.article.author.username == payload.username) {
+      if (state.article && state.article.author.username == payload.username) {
         state.article.author.following = payload.following;
       }
     }
   },
   actions: {
     [FETCH_ARTICLES]: function({ commit }, payload) {
-      commit("setLoading", true);
+      commit(SET_LOADING_ARTICLE, true);
       const url = payload.feedType == "global" ? "/articles" : "/articles/feed";
       ApiService.query(url, { params: payload.filters })
         .then(({ data }) => {
-          commit("setArticles", data);
-          commit("setLoading", false);
+          commit(SET_ARTICLES, data);
+          commit(SET_LOADING_ARTICLE, false);
         })
         .catch(error => {
           throw new Error(error);
         });
     },
     [FETCH_SINGLE_ARTICLE]: function({ commit }, payload) {
-      commit("setLoading", true);
+      commit(SET_LOADING_ARTICLE, true);
       ApiService.get(`/articles/${payload.slug}`)
         .then(({ data }) => {
-          commit("setArticle", data.article);
-          commit("setLoading", false);
+          commit(SET_SINGLE_ARTICLE, data.article);
+          commit(SET_LOADING_ARTICLE, false);
         })
         .catch(error => {
           throw new Error(error);
         });
     },
     [FETCH_COMMENTS]: function({ commit }, payload) {
-      commit("setLoading", true);
+      commit(SET_LOADING_ARTICLE, true);
       ApiService.get(`/articles/${payload.slug}/comments`)
         .then(({ data }) => {
-          commit("setComments", data.comments);
-          commit("setLoading", false);
+          commit(SET_COMMENTS, data.comments);
+          commit(SET_LOADING_ARTICLE, false);
         })
         .catch(error => {
           throw new Error(error);

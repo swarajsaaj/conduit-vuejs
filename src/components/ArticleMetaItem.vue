@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters,mapState } from "vuex";
 import { FAVORITE_ARTICLE, UNFAVORITE_ARTICLE, FOLLOW_USER,UNFOLLOW_USER} from "@/constants/actions";
 export default {
   props: {
@@ -69,12 +69,19 @@ export default {
     ...mapGetters({
       user: "user"
     }),
+    ...mapState({
+      isAuthenticated : state=>state.users.isAuthenticated
+    }),
     isArticleAuthor() {
       return this.user.username == this.article.author.username;
     }
   },
   methods: {
     toggleFavorite(favorite) {
+       if (!this.isAuthenticated) {
+        this.$router.push({ name: "login" });
+        return;
+      }
       if (favorite) {
         this.$store.dispatch(FAVORITE_ARTICLE, { slug: this.article.slug });
       } else {
@@ -82,6 +89,10 @@ export default {
       }
     },
     toggleFollow(follow) {
+       if (!this.isAuthenticated) {
+        this.$router.push({ name: "login" });
+        return;
+      }
       const payload = {
         username: this.article.author.username
       };

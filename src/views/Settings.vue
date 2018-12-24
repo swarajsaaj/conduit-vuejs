@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     user: function() {
-      var userCopy = Object.assign({},this.$store.getters["users/user"]);
+      var userCopy = Object.assign({},this.$store.getters["user"]);
       return userCopy;
     }
   },

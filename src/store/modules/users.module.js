@@ -3,14 +3,20 @@ import {
   FETCH_PROFILE,
   FOLLOW_USER,
   UNFOLLOW_USER,
-  UPDATE_USER,
   LOGIN,
   LOGOUT,
   REGISTER,
   CHECK_AUTH,
-  UPDATE_PROFILE,
-  UPDATE_ARTICLE_AUTHOR
+  UPDATE_PROFILE
 } from "@/constants/actions";
+
+import {
+  SET_USER,
+  SET_PROFILE,
+  LOGOUT_USER,
+  UPDATE_USER,
+  UPDATE_ARTICLE_AUTHOR
+} from "@/constants/mutations";
 
 export default {
   state: {
@@ -27,18 +33,18 @@ export default {
     }
   },
   mutations: {
-    setUser(state, payload) {
+    [SET_USER](state, payload) {
       state.principalUser = payload;
       state.isAuthenticated = true;
       state.errors = null;
       ApiService.setToken(payload.token);
     },
-    logoutUser(state) {
+    [LOGOUT_USER](state) {
       state.principalUser = null;
       state.isAuthenticated = false;
       ApiService.clearToken();
     },
-    setProfile(state, payload) {
+    [SET_PROFILE](state, payload) {
       state.profile = payload;
     },
     [UPDATE_USER](state, payload) {
@@ -84,7 +90,7 @@ export default {
     [FETCH_PROFILE]: function({ commit }, payload) {
       ApiService.query("/profiles/" + payload.username)
         .then(({ data }) => {
-          commit("setProfile", data.profile);
+          commit(SET_PROFILE, data.profile);
         })
         .catch(({ response }) => {
           throw new Error(response.data.errors);
