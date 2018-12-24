@@ -118,10 +118,10 @@ export default {
     },
     addTag(tag) {
       this.article.tagList.push(tag);
+      this.tagStr = null;
     },
     removeTag(tag) {
       this.article.tagList = this.article.tagList.filter(t => t !== tag);
-      this.tagStr = null;
     }
   }
 };

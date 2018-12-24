@@ -1,14 +1,17 @@
 <template>
   <div>
     <span v-if="!isLoading && articlesCount==0">No Articles yet!</span>
-    <ArticlePreviewItem
-      v-for="article in articles"
-      :article="article"
-      :key="article.id"
-      :select-page="changePage"
-    ></ArticlePreviewItem>
-    <span v-if="isLoading">Loading Articles</span>
-    <Pagination :current-page="currentPage" :pages="pages" @select-page="changePage"></Pagination>
+
+    <div v-if="isLoading">Loading Articles</div>
+    <div v-else>
+      <ArticlePreviewItem
+        v-for="article in articles"
+        :article="article"
+        :key="article.id"
+        :select-page="changePage"
+      ></ArticlePreviewItem>
+      <Pagination :current-page="currentPage" :pages="pages" @select-page="changePage"></Pagination>
+    </div>
   </div>
 </template>
 
@@ -16,11 +19,13 @@
 import ArticlePreviewItem from "@/components/ArticlePreviewItem";
 import Pagination from "@/components/Pagination";
 import { mapState } from "vuex";
-import {FETCH_ARTICLES} from "@/constants/actions";
+import { FETCH_ARTICLES } from "@/constants/actions";
 
 export default {
   name: "ArticleList",
-  props: ["params"],
+  props: {
+    params: Object
+  },
   components: { ArticlePreviewItem, Pagination },
   mounted: function() {
     this.getArticles();
@@ -41,7 +46,7 @@ export default {
         ? [...Array(Math.ceil(this.articlesCount / 10)).keys()].map(
             key => key + 1
           )
-        : 0;
+        : [1];
     }
   },
   methods: {

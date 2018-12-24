@@ -42,12 +42,14 @@
 
 <script>
 import { FAVORITE_ARTICLE, UNFAVORITE_ARTICLE } from "@/constants/actions";
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 export default {
-  props: ["article"],
-  computed:{
+  props: {
+    article: Object
+  },
+  computed: {
     ...mapState({
-      isAuthenticated:state=>state.users.isAuthenticated
+      isAuthenticated: state => state.users.isAuthenticated
     })
   },
   methods: {

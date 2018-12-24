@@ -23,12 +23,8 @@
             >
               <i class="ion-plus-round"></i>
               &nbsp;
-              <span v-if="!profile.following">
-              Follow {{profile.username}}
-              </span>
-              <span v-else>
-               Unfollow {{profile.username}}
-               </span>
+              <span v-if="!profile.following">Follow {{profile.username}}</span>
+              <span v-else>Unfollow {{profile.username}}</span>
             </button>
           </div>
         </div>
@@ -41,10 +37,22 @@
           <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
-                <router-link :to="{name:'profile',params:{'username':profile.username}}" class="nav-link" active-class="active" exact href>My Articles</router-link>
+                <router-link
+                  :to="{name:'profile',params:{'username':profile.username}}"
+                  class="nav-link"
+                  active-class="active"
+                  exact
+                  href
+                >My Articles</router-link>
               </li>
               <li class="nav-item">
-                <router-link :to="{name:'profile-favorite-articles',params:{'username':profile.username}}" class="nav-link" active-class="active" exact href>Favorited Articles</router-link>
+                <router-link
+                  :to="{name:'profile-favorite-articles',params:{'username':profile.username}}"
+                  class="nav-link"
+                  active-class="active"
+                  exact
+                  href
+                >Favorited Articles</router-link>
               </li>
             </ul>
           </div>
@@ -57,7 +65,7 @@
 
 
 <script>
-import { FETCH_PROFILE,FOLLOW_USER,UNFOLLOW_USER } from "@/constants/actions";
+import { FETCH_PROFILE, FOLLOW_USER, UNFOLLOW_USER } from "@/constants/actions";
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -71,25 +79,36 @@ export default {
     }),
     isCurrentUser() {
       return this.user && this.user.username == this.profile.username;
+    },
+    username(){
+      return this.$route.params;
     }
   },
   mounted() {
-    this.$store.dispatch(FETCH_PROFILE, this.$route.params);
+    this.fetchProfile();
   },
-  methods:{
-    toggleFollow(follow){
+  methods: {
+    fetchProfile() {
+      this.$store.dispatch(FETCH_PROFILE, this.$route.params);
+    },
+    toggleFollow(follow) {
       if (!this.isAuthenticated) {
         this.$router.push({ name: "login" });
         return;
       }
       const payload = {
         username: this.profile.username
+      };
+      if (follow) {
+        this.$store.dispatch(FOLLOW_USER, payload);
+      } else {
+        this.$store.dispatch(UNFOLLOW_USER, payload);
       }
-      if(follow){
-        this.$store.dispatch(FOLLOW_USER,payload);
-      }else{
-        this.$store.dispatch(UNFOLLOW_USER,payload);
-      }
+    }
+  },
+  watch:{
+    username(){
+      this.fetchProfile();
     }
   }
 };

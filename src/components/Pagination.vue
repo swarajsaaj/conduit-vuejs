@@ -15,7 +15,10 @@
 
 <script>
 export default {
-  props: ["currentPage", "pages"],
+  props: {
+    currentPage: Number,
+    pages: Array
+  },
   methods: {
     paginationClass(page) {
       return {

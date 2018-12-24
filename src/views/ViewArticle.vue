@@ -21,7 +21,7 @@
         <ArticleMetaItem :article="article" @edit="editArticle($event)" @delete="deleteArticle($event)"></ArticleMetaItem>
       </div>
 
-      <div class="row">
+      <div class="row" v-if="isAuthenticated">
         <div class="col-xs-12 col-md-8 offset-md-2">
           <form class="card comment-form">
             <div class="card-block">
@@ -46,6 +46,10 @@
             @edit-comment="editComment($event)"
           ></CommentItem>
         </div>
+      </div>
+      <div v-else>
+       <router-link :to="{name:'login'}">Sign in</router-link> or 
+       <router-link :to="{name:'register'}">Sign up</router-link> to add comments on this article. 
       </div>
     </div>
   </div>
@@ -76,7 +80,8 @@ export default {
     },
     ...mapState({
       article: state => state.articles.article,
-      comments: state => state.articles.comments
+      comments: state => state.articles.comments,
+      isAuthenticated: state=>state.users.isAuthenticated
     })
   },
   mounted() {

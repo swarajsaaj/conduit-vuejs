@@ -73,7 +73,7 @@ export default {
       isAuthenticated : state=>state.users.isAuthenticated
     }),
     isArticleAuthor() {
-      return this.user.username == this.article.author.username;
+      return this.user && this.user.username == this.article.author.username;
     }
   },
   methods: {
