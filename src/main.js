@@ -6,6 +6,7 @@ import "./assets/main.css";
 import ApiService from "./common/api.service";
 import DateFilter from "@/filters/date.filter";
 import MarkdownFilter from "@/filters/markdown.filter";
+import { CHECK_AUTH } from "@/constants/actions";
 
 Vue.config.productionTip = false;
 
@@ -18,7 +19,7 @@ function initApp() {
 }
 
 router.beforeEach((to, from, next) =>
-  Promise.all([store.dispatch("users/checkAuth")]).then(next)
+  Promise.all([store.dispatch(CHECK_AUTH)]).then(next)
 );
 new Vue({
   router,

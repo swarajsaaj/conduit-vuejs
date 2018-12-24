@@ -7,7 +7,11 @@ import {
   CREATE_ARTICLE,
   DELETE_COMMENT,
   EDIT_ARTICLE,
-  DELETE_ARTICLE
+  DELETE_ARTICLE,
+  FAVORITE_ARTICLE,
+  UNFAVORITE_ARTICLE,
+  UPDATE_ARTICLE,
+  UPDATE_ARTICLE_AUTHOR
 } from "@/constants/actions";
 
 export default {
@@ -36,6 +40,23 @@ export default {
     },
     setComments: function(state, payload) {
       state.comments = payload;
+    },
+    [UPDATE_ARTICLE]: function(state, payload) {
+      state.articles.forEach(function(article) {
+        if (article.slug == payload.slug) {
+          (article.favorited = payload.favorited),
+            (article.favoritesCount = payload.favoritesCount);
+        }
+      });
+      if (state.article && state.article.slug == payload.slug) {
+        state.article.favorited = payload.favorited;
+        state.article.favoritesCount = payload.favoritesCount;
+      }
+    },
+    [UPDATE_ARTICLE_AUTHOR]: function(state, payload) {
+      if (state.article.author.username == payload.username) {
+        state.article.author.following = payload.following;
+      }
     }
   },
   actions: {
@@ -95,7 +116,7 @@ export default {
           throw new Error(error);
         });
     },
-    [CREATE_ARTICLE]: function({ state }, payload) {
+    [CREATE_ARTICLE]: function({ commit }, payload) {
       return new Promise((resolve, reject) => {
         ApiService.post("/articles", { article: payload.article })
           .then(({ data }) => {
@@ -106,7 +127,7 @@ export default {
           });
       });
     },
-    [EDIT_ARTICLE]: function({ state }, payload) {
+    [EDIT_ARTICLE]: function({ commit }, payload) {
       return new Promise((resolve, reject) => {
         ApiService.put(`/articles/${payload.slug}`, {
           article: payload.article
@@ -119,7 +140,7 @@ export default {
           });
       });
     },
-    [DELETE_ARTICLE]: function({ state }, payload) {
+    [DELETE_ARTICLE]: function({ commit }, payload) {
       return new Promise((resolve, reject) => {
         ApiService.delete(`/articles/${payload.slug}`)
           .then(({ data }) => {
@@ -129,6 +150,24 @@ export default {
             reject(response.data.errors);
           });
       });
+    },
+    [FAVORITE_ARTICLE]: function({ commit }, payload) {
+      ApiService.post(`/articles/${payload.slug}/favorite`)
+        .then(({ data }) => {
+          commit(UPDATE_ARTICLE, data.article);
+        })
+        .catch(error => {
+          throw new Error(error);
+        });
+    },
+    [UNFAVORITE_ARTICLE]: function({ commit }, payload) {
+      ApiService.delete(`/articles/${payload.slug}/favorite`)
+        .then(({ data }) => {
+          commit(UPDATE_ARTICLE, data.article);
+        })
+        .catch(error => {
+          throw new Error(error);
+        });
     }
   }
 };

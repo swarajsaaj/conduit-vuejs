@@ -17,20 +17,18 @@
               Edit Profile
             </router-link>
             <button
-              v-if="!isCurrentUser && !profile.following"
+              v-if="!isCurrentUser"
               class="btn btn-sm btn-outline-secondary action-btn"
+              @click="toggleFollow(!profile.following)"
             >
               <i class="ion-plus-round"></i>
               &nbsp;
+              <span v-if="!profile.following">
               Follow {{profile.username}}
-            </button>
-            <button
-              v-if="!isCurrentUser && profile.following"
-              class="btn btn-sm btn-outline-secondary action-btn"
-            >
-              <i class="ion-plus-round"></i>
-              &nbsp;
-              Unfollow {{profile.username}}
+              </span>
+              <span v-else>
+               Unfollow {{profile.username}}
+               </span>
             </button>
           </div>
         </div>
@@ -59,7 +57,7 @@
 
 
 <script>
-import { FETCH_PROFILE } from "@/constants/actions";
+import { FETCH_PROFILE,FOLLOW_USER,UNFOLLOW_USER } from "@/constants/actions";
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -68,7 +66,7 @@ export default {
       profile: state => state.users.profile
     }),
     ...mapGetters({
-      user: "users/user"
+      user: "user"
     }),
     isCurrentUser() {
       return this.user.username == this.profile.username;
@@ -76,6 +74,18 @@ export default {
   },
   mounted() {
     this.$store.dispatch(FETCH_PROFILE, this.$route.params);
+  },
+  methods:{
+    toggleFollow(follow){
+      const payload = {
+        username: this.profile.username
+      }
+      if(follow){
+        this.$store.dispatch(FOLLOW_USER,payload);
+      }else{
+        this.$store.dispatch(UNFOLLOW_USER,payload);
+      }
+    }
   }
 };
 </script>

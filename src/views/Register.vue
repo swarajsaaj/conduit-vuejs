@@ -46,6 +46,7 @@
 
 <script>
 import ErrorList from "@/components/ErrorList";
+import {REGISTER} from "@/constants/actions";
 export default {
   data: function() {
     return {
@@ -57,7 +58,7 @@ export default {
   methods: {
     register: function() {
       this.$store
-        .dispatch("users/register", {
+        .dispatch(REGISTER, {
           username: this.user.name,
           password: this.user.password,
           email: this.user.email

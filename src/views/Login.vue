@@ -38,6 +38,7 @@
 
 <script>
 import ErrorList from "@/components/ErrorList";
+import {LOGIN} from "@/constants/actions";
 export default {
   data: function() {
     return {
@@ -49,7 +50,7 @@ export default {
   methods: {
     login: function() {
       this.$store
-        .dispatch("users/login", {
+        .dispatch(LOGIN, {
           email: this.user.email,
           password: this.user.password
         })

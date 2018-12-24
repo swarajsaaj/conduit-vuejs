@@ -63,7 +63,7 @@
 
 <script>
 import ErrorList from "@/components/ErrorList";
-
+import {LOGOUT,UPDATE_PROFILE} from "@/constants/actions";
 export default {
   data(){
     return {
@@ -80,7 +80,7 @@ export default {
   methods: {
     logout() {
       this.$store
-        .dispatch("users/logout")
+        .dispatch(LOGOUT)
         .then(() => this.$router.push({ name: "global-feed" }));
     },
     updateProfile() {
@@ -94,7 +94,7 @@ export default {
         updatedUser.password = this.user.password;
       }
       this.$store
-        .dispatch("users/update", updatedUser)
+        .dispatch(UPDATE_PROFILE, updatedUser)
         .then(() => this.$router.push({ name: "global-feed" }),
         (err)=>this.errors=err);
     }

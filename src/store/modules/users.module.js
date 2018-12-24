@@ -1,8 +1,18 @@
 import ApiService from "@/common/api.service";
-import { FETCH_PROFILE } from "@/constants/actions";
+import {
+  FETCH_PROFILE,
+  FOLLOW_USER,
+  UNFOLLOW_USER,
+  UPDATE_USER,
+  LOGIN,
+  LOGOUT,
+  REGISTER,
+  CHECK_AUTH,
+  UPDATE_PROFILE,
+  UPDATE_ARTICLE_AUTHOR
+} from "@/constants/actions";
 
 export default {
-  namespaced: true,
   state: {
     principalUser: null,
     profile: {},
@@ -30,10 +40,13 @@ export default {
     },
     setProfile(state, payload) {
       state.profile = payload;
+    },
+    [UPDATE_USER](state, payload) {
+      state.profile.following = payload.following;
     }
   },
   actions: {
-    login: function({ commit }, payload) {
+    [LOGIN]: function({ commit }, payload) {
       return new Promise((resolve, reject) => {
         ApiService.post("/users/login", { user: payload })
           .then(({ data }) => {
@@ -45,7 +58,7 @@ export default {
           });
       });
     },
-    register: function({ commit }, payload) {
+    [REGISTER]: function({ commit }, payload) {
       return new Promise((resolve, reject) => {
         ApiService.post("/users", { user: payload })
           .then(({ data }) => {
@@ -57,18 +70,18 @@ export default {
           });
       });
     },
-    logout: function({ commit }) {
+    [LOGOUT]: function({ commit }) {
       return new Promise(resolve => {
         commit("logoutUser");
         resolve();
       });
     },
-    checkAuth: function({ state }) {
+    [CHECK_AUTH]: function({ state }) {
       if (state.isAuthenticated) {
         ApiService.setToken(state.principalUser.token);
       }
     },
-    fetchProfile: function({ commit }, payload) {
+    [FETCH_PROFILE]: function({ commit }, payload) {
       ApiService.query("/profiles/" + payload.username)
         .then(({ data }) => {
           commit("setProfile", data.profile);
@@ -77,7 +90,7 @@ export default {
           throw new Error(response.data.errors);
         });
     },
-    update: function({ commit }, payload) {
+    [UPDATE_PROFILE]: function({ commit }, payload) {
       return new Promise((resolve, reject) => {
         ApiService.put("/user", payload)
           .then(({ data }) => {
@@ -87,6 +100,26 @@ export default {
             reject(response.data.errors);
           });
       });
+    },
+    [FOLLOW_USER]: function({ commit }, payload) {
+      ApiService.post(`/profiles/${payload.username}/follow`)
+        .then(({ data }) => {
+          commit(UPDATE_USER, data.profile);
+          commit(UPDATE_ARTICLE_AUTHOR, data.profile);
+        })
+        .catch(error => {
+          throw new Error(error);
+        });
+    },
+    [UNFOLLOW_USER]: function({ commit }, payload) {
+      ApiService.delete(`/profiles/${payload.username}/follow`)
+        .then(({ data }) => {
+          commit(UPDATE_USER, data.profile);
+          commit(UPDATE_ARTICLE_AUTHOR, data.profile);
+        })
+        .catch(error => {
+          throw new Error(error);
+        });
     }
   }
 };
